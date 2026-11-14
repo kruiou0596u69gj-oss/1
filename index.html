@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mohamed Magdy | بلاورات و شفاطات و تهوية</title>
+<style>
+*{box-sizing:border-box;font-family:'Segoe UI',Tahoma,sans-serif}
+body{margin:0;background:#f3f4f6;color:#111}
+header{background:#0f172a;color:#fff;padding:14px 16px;position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center}
+header b{font-size:20px} header b span{color:#22c55e}
+header button{background:#22c55e;border:0;color:#fff;padding:8px 14px;border-radius:999px;font-weight:700;cursor:pointer}
+.hero{background:linear-gradient(90deg,#0f172a,#14532d);color:#fff;padding:26px 16px;text-align:center}
+.hero h1{margin:0 0 8px;font-size:26px}.hero p{margin:0;opacity:.9}
+.searchbar{display:flex;gap:8px;padding:14px;max-width:1000px;margin:auto}
+.searchbar input{flex:1;padding:12px;border-radius:12px;border:1px solid #ddd}
+.searchbar select{padding:12px;border-radius:12px;border:1px solid #ddd}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;padding:0 14px 30px;max-width:1100px;margin:auto}
+.card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.06)}
+.card img{width:100%;height:180px;object-fit:cover;background:#e5e7eb}
+.card .in{padding:12px}
+.badge{background:#dcfce7;color:#166534;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700}
+.price{font-size:20px;font-weight:800;margin:8px 0 2px}.price small{font-size:12px;color:#666}
+.card h3{margin:6px 0;font-size:16px;line-height:1.4}
+.card p{font-size:13px;color:#555;line-height:1.5;min-height:38px}
+.row{display:flex;gap:8px;margin-top:10px}
+.btn{flex:1;padding:11px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+.btn-w{background:#25D366;color:#fff}.btn-d{background:#fee2e2;color:#991b1b;display:none}
+body.admin .btn-d{display:block}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:14px;z-index:20}
+.modal.open{display:flex}.box{background:#fff;width:100%;max-width:480px;border-radius:16px;padding:18px;max-height:90vh;overflow:auto}
+.box input,.box select,.box textarea{width:100%;padding:11px;margin:6px 0;border:1px solid #ddd;border-radius:10px}
+.box button{width:100%;padding:12px;border:0;border-radius:10px;background:#0f172a;color:#fff;font-weight:700;margin-top:8px;cursor:pointer}
+.close{float:left;cursor:pointer;font-size:20px}
+footer{text-align:center;padding:20px;color:#666;font-size:13px}
+</style>
+</head>
+<body>
+<header><b>Mohamed <span>Magdy</span></b><div><button onclick="openAdmin()">لوحة الأدمن 🔐</button></div></header>
+<div class="hero"><h1>بلاورات - شفاطات - ستائر هواء - تكييفات</h1><p>تهوية صناعية للمطاعم و المصانع و الفنادق | اطلب واتساب و التوصيل لحد عندك</p></div>
+<div class="searchbar"><input id="q" placeholder="دور على منتج... اكتب BHK أو شفاط أو بلاور" oninput="render()"><select id="cat" onchange="render()"><option value="">كل الأقسام</option><option>بلاور شفط دخان</option><option>بلاور دكت</option><option>بلاور روف توب</option><option>شفاطات</option><option>ستائر هواء</option><option>تكييفات</option><option>اكسسوارات</option></select></div>
+<div class="grid" id="grid"></div>
+<footer>Mohamed Magdy © 2026 - جميع الحقوق محفوظة | للطلب اضغط على زرار واتساب في أي منتج</footer>
+
+<!-- مودال الأدمن -->
+<div class="modal" id="adminModal"><div class="box"><span class="close" onclick="closeModal()">✕</span><h3 id="adminTitle">دخول الأدمن</h3><div id="loginBox"><input id="u" placeholder="اسم المستخدم - admin"><input id="p" type="password" placeholder="كلمة السر - 1234"><button onclick="login()">دخول</button><p style="font-size:13px;color:#666">انت بس اللي معاك البيانات دي، العملاء مش هيشوفوا اللوحة دي.</p></div><div id="addBox" style="display:none"><input id="n_name" placeholder="اسم المنتج"><input id="n_code" placeholder="الكود - مثال C-2552"><input id="n_price" type="number" placeholder="السعر بالجنيه"><select id="n_cat"><option>بلاور شفط دخان</option><option>بلاور دكت</option><option>بلاور روف توب</option><option>شفاطات</option><option>ستائر هواء</option><option>تكييفات</option><option>اكسسوارات</option></select><input id="n_img" placeholder="لينك صورة المنتج - ممكن تسيبه فاضي"><textarea id="n_desc" placeholder="وصف قصير"></textarea><button onclick="addProduct()" style="background:#22c55e">➕ اضافة منتج جديد</button><button onclick="logout()" style="background:#ef4444">خروج من الأدمن</button></div></div></div>
+
+<!-- مودال الطلب -->
+<div class="modal" id="orderModal"><div class="box"><span class="close" onclick="closeModal()">✕</span><h3 id="orderTitle">تأكيد الطلب</h3><input id="cname" placeholder="اسمك"><input id="cphone" placeholder="رقم موبايلك"><input id="caddr" placeholder="العنوان / المحافظة"><button onclick="sendWhats()" style="background:#25D366">ارسال الطلب على واتساب ✅</button></div></div>
+
+<script>
+// الرقم مستخبي - مش باين في واجهة الموقع
+const _w = atob("MjAxMTQ5ODA3OTY5"); // رقم الواتساب بتاعك
+let currentProduct = null;
+
+let defaultProducts = [
+{name:"بلاور شفط دخان و حرارة BHK 450 - 4HP",code:"C-2552",price:45800,cat:"بلاور شفط دخان",desc:"مناسب لمطابخ المطاعم و الفنادق، شفط دخان و أبخرة و دهون بقوة عالية.",img:"https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600"},
+{name:"بلاور شفط دخان و حرارة BHK 500 - 5.5HP",code:"C-2632",price:57200,cat:"بلاور شفط دخان",desc:"أداء قوي للمطابخ التجارية الكبيرة، ريش منحنية للخلف و تشغيل ثابت.",img:"https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600"},
+{name:"بلاور شفط دخان AHS SILENT 450 - 4HP",code:"C-284",price:61990,cat:"بلاور شفط دخان",desc:"شفط صناعي قوي مع تشغيل هادئ، مثالي للأماكن اللي محتاجة هدوء.",img:"https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600"},
+{name:"بلاور شفط دخان HKA 560 - 7.5HP",code:"C-2339",price:28750,cat:"بلاور شفط دخان",desc:"مروحة شعاعية، تدفق هواء 10000 م3/ساعة، يتحمل حرارة لحد 90 درجة.",img:"https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600"},
+{name:"شفاط حائط معدن تركي B6PAM 400",code:"C-418",price:6650,cat:"شفاطات",desc:"شفاط حائط معدني للتهوية الصناعية و التجارية، سحب قوي للهواء و الدخان.",img:"https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600"},
+{name:"شفاط ويلسون مسمط سايلنت أبيض 5 بوصة",code:"3367",price:1450,cat:"شفاطات",desc:"شفاط ديكوري مسمط، هادئ جدا و موفر للطاقة، مثالي للحمامات و المطابخ الصغيرة.",img:"https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=600"},
+{name:"شفاط حائط تركي B6PAT 350",code:"C-78",price:5450,cat:"شفاطات",desc:"شفاط حائط معدن تركي، تهوية قوية للورش و المخازن و المطاعم.",img:"https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=600"},
+{name:"ستارة هواء Ferrari - قوة إيطالية",code:"AIR-FER",price:18900,cat:"ستائر هواء",desc:"ستارة هواء لحماية المكان من الأتربة و الحشرات و الحفاظ على التكييف.",img:"https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=600"},
+{name:"بلاور دكت خطي معدن",code:"DUCT-M",price:8900,cat:"بلاور دكت",desc:"بلاور دكت خطي معدن للتهوية داخل الدكتات الطويلة.",img:"https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600"},
+{name:"بلاور روف توب للأسطح",code:"ROOF-01",price:12400,cat:"بلاور روف توب",desc:"يركب على السطح لشفط الهواء الساخن و الدخان من المصانع و المخازن.",img:"https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600"},
+{name:"تكييف اسبليت 1.5 حصان - بارد فقط",code:"AC-15",price:32500,cat:"تكييفات",desc:"تكييف اسبليت موفر للطاقة، تبريد سريع للغرف و المكاتب.",img:"https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=600"},
+{name:"اكسسورات تركيب تهوية - مجموعة كاملة",code:"ACC-SET",price:1250,cat:"اكسسوارات",desc:"كل اكسسوارات تركيب التهوية و الدكتات و التثبيت.",img:"https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600"},
+];
+let products = JSON.parse(localStorage.getItem('mm_products') || 'null') || defaultProducts;
+function save(){localStorage.setItem('mm_products',JSON.stringify(products))}
+function render(){
+ let q=document.getElementById('q').value.toLowerCase();
+ let c=document.getElementById('cat').value;
+ let list=products.filter(p=>(!c||p.cat===c)&&(!q||p.name.toLowerCase().includes(q)));
+ document.getElementById('grid').innerHTML=list.map((p,i)=>`
+ <div class="card"><img src="${p.img||'https://via.placeholder.com/600x400?text=Mohamed+Magdy'}" onerror="this.src='https://via.placeholder.com/600x400?text=Mohamed+Magdy'">
+ <div class="in"><span class="badge">${p.cat}</span><span style="float:left;font-size:12px;color:#888">كود: ${p.code}</span>
+ <h3>${p.name}</h3><p>${p.desc}</p>
+ <div class="price">${p.price.toLocaleString()} <small>جنيه</small></div>
+ <div class="row"><button class="btn btn-w" onclick="openOrder(${products.indexOf(p)})">اطلب واتساب 💬</button><button class="btn btn-d" onclick="editPrice(${products.indexOf(p)})">تعديل السعر ✏️</button><button class="btn btn-d" onclick="delProduct(${products.indexOf(p)})">مسح 🗑️</button></div>
+ </div></div>`).join('') || '<p style="text-align:center">مفيش منتجات بالاسم ده</p>';
+}
+function openOrder(i){currentProduct=products[i];document.getElementById('orderTitle').innerText='طلب: '+currentProduct.name;document.getElementById('orderModal').classList.add('open')}
+function sendWhats(){
+ let name=document.getElementById('cname').value||'عميل';
+ let phone=document.getElementById('cphone').value||'---';
+ let addr=document.getElementById('caddr').value||'---';
+ let msg=`طلب جديد من موقع Mohamed Magdy%0A%0A📌 المنتج: ${currentProduct.name}%0A🔢 الكود: ${currentProduct.code}%0A💰 السعر: ${currentProduct.price} جنيه%0A%0A👤 الاسم: ${name}%0A📞 موبايل العميل: ${phone}%0A📍 العنوان: ${addr}`;
+ window.open(`https://wa.me/${_w}?text=${msg}`,'_blank');
+ closeModal();
+}
+function openAdmin(){document.getElementById('adminModal').classList.add('open')}
+function closeModal(){document.querySelectorAll('.modal').forEach(m=>m.classList.remove('open'))}
+function login(){
+ if(document.getElementById('u').value==='admin' && document.getElementById('p').value==='1234'){
+  document.body.classList.add('admin');document.getElementById('loginBox').style.display='none';document.getElementById('addBox').style.display='block';document.getElementById('adminTitle').innerText='أهلا بيك يا محمد - لوحة الأدمن';render();alert('دخلت كأدمن ✅ دلوقتي تقدر تعدل الأسعار و تضيف و تمسح');
+ } else alert('البيانات غلط!');
+}
+function logout(){document.body.classList.remove('admin');document.getElementById('loginBox').style.display='block';document.getElementById('addBox').style.display='none';closeModal();render()}
+function addProduct(){
+ let p={name:document.getElementById('n_name').value,code:document.getElementById('n_code').value,price:Number(document.getElementById('n_price').value),cat:document.getElementById('n_cat').value,img:document.getElementById('n_img').value,desc:document.getElementById('n_desc').value};
+ if(!p.name||!p.price) return alert('اكتب الاسم و السعر');
+ products.unshift(p);save();render();closeModal();alert('اتضاف ✅');
+}
+function editPrice(i){let np=prompt('اكتب السعر الجديد لـ '+products[i].name,products[i].price);if(np){products[i].price=Number(np);save();render()}}
+function delProduct(i){if(confirm('تمسح '+products[i].name+' ؟')){products.splice(i,1);save();render()}}
+render();
+</script>
+
+</body>
+</html>
